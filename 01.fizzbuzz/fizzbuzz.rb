@@ -1,5 +1,4 @@
-1.upto(20){
-    |i|
+1.upto(20) do |i|
     if i%3 == 0 && i%5 == 0
         print "FizzBuzz", "  "
     elsif i%3 == 0
@@ -9,4 +8,4 @@
     else
         print i, "  "
     end
-}
+end
