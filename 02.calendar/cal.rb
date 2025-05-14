@@ -5,6 +5,11 @@ start_date = Date.new(2025, 5, 1)
 end_date = Date.new(2025, 5, -1)
 calendar_week = Array.new(7, "  ") #週ごとに配列を作る
 
+month_year = start_date.month.to_s + "月" + "　" + start_date.year.to_s
+puts month_year.center(25)
+week_name = ["日", "月", "火", "水", "木", "金", "土"]
+puts week_name.join("  ")
+
 while start_date <= end_date
     current_day = start_date.day
     current_date = start_date
