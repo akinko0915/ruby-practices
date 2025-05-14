@@ -33,6 +33,9 @@ while start_date <= end_date
         puts calendar_week.join("  ") #これまでに挿入してきた要素の値を2つのスペースを空けて出力する
         calendar_week = Array.new(7, "  ") #次の週に行くため、配列を初期化する
     end
-
     start_date = start_date.next_day
+end
+
+unless calendar_week.empty?
+    puts calendar_week.join("  ")
 end
