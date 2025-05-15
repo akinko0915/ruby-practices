@@ -2,36 +2,22 @@
 require 'date'
 require 'optparse'
 
-def format_day(current_day)
-    if current_day < 10
-        " #{current_day}"
-    else
-        "#{current_day}"
-    end
-end
-
 def display_calendar(month, year)
     start_date = Date.new(year, month, 1)
     end_date = Date.new(year, month, -1)
-    calendar_week = Array.new(7, "  ")
 
     puts "      #{month}月 #{year}      "
     puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
 
-    while start_date <= end_date
-        wday_position = start_date.wday
-        calendar_week[wday_position] = format_day(start_date.day)
-
-        if wday_position == 6
-            puts calendar_week.join(" ")
-            calendar_week = Array.new(7, "  ")
-        end
-        start_date = start_date.next_day
+    start_date.wday.times do
+        print "   "
     end
 
-    unless calendar_week.empty?
-        puts calendar_week.join(" ")
+    (start_date..end_date).each do |date|
+        print date.day.to_s.rjust(2) + " "
+        puts if date.saturday?
     end
+    puts
 end
 
 def get_calendar
@@ -41,4 +27,4 @@ def get_calendar
     display_calendar(month, year)
 end
 
-get_calendar()
+get_calendar
