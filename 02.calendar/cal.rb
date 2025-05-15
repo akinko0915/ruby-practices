@@ -11,29 +11,26 @@ def format_day(current_day)
 end
 
 def display_calendar(month, year)
-    week_names = ["日", "月", "火", "水", "木", "金", "土"]
-    spacing = " "
-    calendar_width = week_names.join(spacing).length
     start_date = Date.new(year, month, 1)
     end_date = Date.new(year, month, -1)
     calendar_week = Array.new(7, "  ")
 
-    puts "#{month}月 #{year}".center(calendar_width)
-    puts week_names.join(spacing)
+    puts "      #{month}月 #{year}      "
+    puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
 
     while start_date <= end_date
         wday_position = start_date.wday
         calendar_week[wday_position] = format_day(start_date.day)
 
         if wday_position == 6
-            puts calendar_week.join(spacing)
+            puts calendar_week.join(" ")
             calendar_week = Array.new(7, "  ")
         end
         start_date = start_date.next_day
     end
 
     unless calendar_week.empty?
-        puts calendar_week.join(spacing)
+        puts calendar_week.join(" ")
     end
 end
 
