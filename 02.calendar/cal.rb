@@ -12,13 +12,13 @@ end
 
 def display_calendar(month, year)
     week_names = ["日", "月", "火", "水", "木", "金", "土"]
-    spacing = "  "
+    spacing = " "
     calendar_width = week_names.join(spacing).length
     start_date = Date.new(year, month, 1)
     end_date = Date.new(year, month, -1)
     calendar_week = Array.new(7, "  ")
 
-    puts "#{month}月　#{year}".center(calendar_width)
+    puts "#{month}月 #{year}".center(calendar_width)
     puts week_names.join(spacing)
 
     while start_date <= end_date
