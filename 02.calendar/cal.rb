@@ -2,23 +2,10 @@
 require 'date'
 require 'optparse'
 
-params = ARGV.getopts("m:y:")
-if params["m"]
-    month = params["m"].to_i
-else
-    month = Date.today.month
-end
-
-if params["y"]
-    year = params["y"].to_i
-else
-    year = Date.today.year
-end
-
 def format_day(current_day)
     formatted_output =
         if current_day < 10
-            " #{current_day}" # 一桁の場合、前にスペースを追加
+            " #{current_day}"
         else
             "#{current_day}"
         end
@@ -27,15 +14,13 @@ end
 def display_calendar(month, year)
     start_date = Date.new(year, month, 1)
     end_date = Date.new(year, month, -1)
-    calendar_week = Array.new(7, "  ") #週ごとに配列を作る
+    calendar_week = Array.new(7, "  ")
 
-    # 月と年の表示
     month_year = start_date.month.to_s + "月" + "　" + start_date.year.to_s
     puts month_year.center(25)
     week_name = ["日", "月", "火", "水", "木", "金", "土"]
     puts week_name.join("  ")
 
-    # 日付の表示
     while start_date <= end_date
         current_day = start_date.day
         current_date = start_date
@@ -44,9 +29,9 @@ def display_calendar(month, year)
         formatted_output = format_day(current_day)
         calendar_week[wday_position] = formatted_output
 
-        if wday_position == 6   # 6=土曜日
+        if wday_position == 6
             puts calendar_week.join("  ")
-            calendar_week = Array.new(7, "  ") #次の週に行くため、配列を初期化する
+            calendar_week = Array.new(7, "  ")
         end
         start_date = start_date.next_day
     end
@@ -56,4 +41,20 @@ def display_calendar(month, year)
     end
 end
 
-display_calendar(month, year)
+def get_calendar
+    params = ARGV.getopts("m:y:")
+    if params["m"]
+        month = params["m"].to_i
+    else
+        month = Date.today.month
+    end
+    if params["y"]
+        year = params["y"].to_i
+    else
+        year = Date.today.year
+    end
+
+    display_calendar(month, year)
+end
+
+get_calendar()
