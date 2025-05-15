@@ -39,17 +39,8 @@ end
 
 def get_calendar
     params = ARGV.getopts("m:y:")
-    if params["m"]
-        month = params["m"].to_i
-    else
-        month = Date.today.month
-    end
-    if params["y"]
-        year = params["y"].to_i
-    else
-        year = Date.today.year
-    end
-
+    month = params["m"] ? params["m"].to_i : Date.today.month
+    year = params["y"] ? params["y"].to_i : Date.today.year
     display_calendar(month, year)
 end
 
