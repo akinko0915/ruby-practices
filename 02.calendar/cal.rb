@@ -15,10 +15,6 @@ else
     year = Date.today.year
 end
 
-start_date = Date.new(year, month, 1)
-end_date = Date.new(year, month, -1)
-calendar_week = Array.new(7, "  ") #週ごとに配列を作る
-
 def format_day(current_day)
     formatted_output =
         if current_day < 10
@@ -28,27 +24,36 @@ def format_day(current_day)
         end
 end
 
-month_year = start_date.month.to_s + "月" + "　" + start_date.year.to_s
-puts month_year.center(25)
-week_name = ["日", "月", "火", "水", "木", "金", "土"]
-puts week_name.join("  ")
+def display_calendar(month, year)
+    start_date = Date.new(year, month, 1)
+    end_date = Date.new(year, month, -1)
+    calendar_week = Array.new(7, "  ") #週ごとに配列を作る
 
+    # 月と年の表示
+    month_year = start_date.month.to_s + "月" + "　" + start_date.year.to_s
+    puts month_year.center(25)
+    week_name = ["日", "月", "火", "水", "木", "金", "土"]
+    puts week_name.join("  ")
 
-while start_date <= end_date
-    current_day = start_date.day
-    current_date = start_date
-    wday_position = current_date.wday
+    # 日付の表示
+    while start_date <= end_date
+        current_day = start_date.day
+        current_date = start_date
+        wday_position = current_date.wday
 
-    formatted_output = format_day(current_day)
-    calendar_week[wday_position] = formatted_output
+        formatted_output = format_day(current_day)
+        calendar_week[wday_position] = formatted_output
 
-    if wday_position == 6   # 6=土曜日
-        puts calendar_week.join("  ") #これまでに挿入してきた要素の値を2つのスペースを空けて出力する
-        calendar_week = Array.new(7, "  ") #次の週に行くため、配列を初期化する
+        if wday_position == 6   # 6=土曜日
+            puts calendar_week.join("  ")
+            calendar_week = Array.new(7, "  ") #次の週に行くため、配列を初期化する
+        end
+        start_date = start_date.next_day
     end
-    start_date = start_date.next_day
+
+    unless calendar_week.empty?
+        puts calendar_week.join("  ")
+    end
 end
 
-unless calendar_week.empty?
-    puts calendar_week.join("  ")
-end
+display_calendar(month, year)
