@@ -3,8 +3,17 @@ require 'date'
 require 'optparse'
 
 params = ARGV.getopts("m:y:")
-month = params["m"].to_i
-year = params["y"].to_i
+if params["m"]
+    month = params["m"].to_i
+else
+    month = Date.today.month
+end
+
+if params["y"]
+    year = params["y"].to_i
+else
+    year = Date.today.year
+end
 
 start_date = Date.new(year, month, 1)
 end_date = Date.new(year, month, -1)
