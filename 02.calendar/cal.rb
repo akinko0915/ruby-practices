@@ -3,12 +3,11 @@ require 'date'
 require 'optparse'
 
 def format_day(current_day)
-    formatted_output =
-        if current_day < 10
-            " #{current_day}"
-        else
-            "#{current_day}"
-        end
+    if current_day < 10
+        " #{current_day}"
+    else
+        "#{current_day}"
+    end
 end
 
 def display_calendar(month, year)
