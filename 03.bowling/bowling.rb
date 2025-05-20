@@ -8,49 +8,35 @@ score = ARGV[0]
 # 2. 1投毎に分割する
 scores = score.split(',')
 
-# 3. 数字に変換
+# 3. 数字に変換して配列に入れる
 shots = []
 scores.each do |s|
   if s == 'X'
     shots << 10
-    shots << 0
   else
     shots << s.to_i
   end
 end
 
-# 4. フレーム毎に分割
-frames = shots.each_slice(2).to_a
-
-# スペア・ストライクフラグを作る
-is_spare = false
-is_strike = false
-
-# ボーナスポイントを格納する配列を作る
-bonus_points = []
 total = 0
-frames.each do |f|
-  if is_spare
-    bonus_points.push(f[0]);
-    is_spare = false
-  end
-  if is_strike
-    bonus_points.push(f[0]);
-    if f[1]
-    bonus_points.push(f[1]);
-    end
-    is_strike = false
-  end
+frame = 0
+i = 0
 
-  total += f.sum
-
-  if (f.sum == 10 && f[0] != 10) || (f[0] == 0 && f[1] == 10)
-    is_spare = true
+while frame < 10
+  if shots[i] == 10
+    total += 10
+    total += shots[i + 1]
+    total += shots[i + 2]
+    i += 1
+  elsif shots[i] + shots[i + 1] == 10
+    total += 10
+    total += shots[i + 1]
+    i += 2 #2投で1ペアであるため、iを2つ回す
+  else
+    total += shots[i] + shots[i + 1]
+    i += 2
   end
-
-  if f[0] == 10
-    is_strike = true
-  end
+  frame += 1
 end
-score = total + bonus_points.sum
-p score
+
+p total
