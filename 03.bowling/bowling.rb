@@ -17,4 +17,10 @@ scores.each do |s|
 end
 # 4. フレーム毎に分割
 frames = shots.each_slice(2).to_a
-p frames
+
+# 5. 単純に合計値を計算する
+total = 0
+frames.each do |f|
+  total += f.sum
+end
+p total
