@@ -30,8 +30,8 @@ while frame < 10
     i += 1
   elsif shots[i] + shots[i + 1] == 10
     total += 10
-    total += shots[i + 1]
-    i += 2 #2投で1ペアであるため、iを2つ回す
+    total += shots[i + 2] #ペアの数字のもう一つ先の数字を足したいから+2
+    i += 2
   else
     total += shots[i] + shots[i + 1]
     i += 2
