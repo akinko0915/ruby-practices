@@ -2,21 +2,27 @@
 # frozen_string_literal: true
 score = ARGV[0]
 scores = score.split(',')
-shots = scores.map{ |s| s == 'X' ? 10 : s.to_i }
+shots = []
+shots = scores.map { |score| score == 'X' ? [10, 0] : score.to_i }.flatten
+
+frames = shots.each_slice(2).map{ |s| s }
 
 total = 0
-i = 0
-
-(0...10).each do |frame|
-  if shots[i] == 10
-    total += 10 + shots[i + 1] + shots[i + 2]
-    i += 1
-  elsif shots[i] + shots[i + 1] == 10
-    total += 10 + shots[i + 2]
-    i += 2
+frames.each_with_index do |frame, frame_index|
+  if frame_index < 9
+    if frame[0] == 10
+      if frames[frame_index + 1][0] == 10  # 次もストライク
+        total += 10 + 10 + frames[frame_index + 2][0]
+      else
+        total += 10 + frames[frame_index + 1].sum
+      end
+    elsif frame.sum == 10 # スペア
+      total += 10 + frames[frame_index + 1][0]
+    else
+      total += frame.sum # 通常
+    end
   else
-    total += shots[i] + shots[i + 1]
-    i += 2
+    total += frame.sum
   end
 end
 
