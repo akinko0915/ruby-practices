@@ -1,12 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-
 score = ARGV[0]
 scores = score.split(',')
-shots = []
-scores.each do |s|
-  shots << (s == 'X' ? 10 : s.to_i)
-end
+shots = scores.map{ |s| s == 'X' ? 10 : s.to_i }
 
 total = 0
 i = 0
@@ -22,7 +18,6 @@ i = 0
     total += shots[i] + shots[i + 1]
     i += 2
   end
-  frame + 1
 end
 
 p total
