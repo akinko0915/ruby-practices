@@ -1,29 +1,30 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 score = ARGV[0]
 scores = score.split(',')
-shots = []
-shots = scores.map { |score| score == 'X' ? [10, 0] : score.to_i }.flatten
 
-frames = shots.each_slice(2).map{ |s| s }
+shots = scores.map { |s| s == 'X' ? [10, 0] : s.to_i }.flatten
+frames = shots.each_slice(2).to_a
 
 total = 0
-frames.each_with_index do |frame, frame_index|
-  if frame_index < 9
-    if frame[0] == 10
-      if frames[frame_index + 1][0] == 10  # 次もストライク
-        total += 10 + 10 + frames[frame_index + 2][0]
-      else
-        total += 10 + frames[frame_index + 1].sum
-      end
-    elsif frame.sum == 10 # スペア
-      total += 10 + frames[frame_index + 1][0]
-    else
-      total += frame.sum # 通常
-    end
+
+frames.each_with_index do |frame, i|
+  total += frame.sum
+  next if frame.sum != 10 || i >= 9
+
+  # ストライク
+  if frame[0] == 10
+    next_frame = frames[i + 1]
+    total += if next_frame[0] == 10 && frames[i + 2]
+               10 + frames[i + 2][0]
+             else
+               next_frame.sum
+             end
   else
-    total += frame.sum
+    # スペア
+    total += frames[i + 1][0]
   end
 end
 
-p total
+puts total
