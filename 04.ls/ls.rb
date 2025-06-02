@@ -14,10 +14,23 @@ def format_columns(contents, column_number)
 
   # 縦(列)で分割
   columns = sorted_contents.each_slice(row_count).to_a;
+
+  # 縦(列)の幅(列の中で1番長いファイル/ディレクトリの名前の長さ)を決める
+  column_width = columns.map do |col|
+    length_array = col.map do |c|
+      c.length
+    end
+    length_array.max
+  end
   # 横 (行)で分割 (指定した配列の長さまでなかったら最後尾に空白の要素を入れる)
   rows = columns.each{ |col| col[row_count - 1] = " " if col.length < row_count }.transpose
+
+  # 各行ずつ表示していく
   rows.each do |row|
-    puts row.map{|r| r.ljust(10)}.join(" ")
+    row.each_with_index do |item, col_index|
+      print item.ljust(column_width[col_index] + 2)
+    end
+    puts
   end
 end
 
