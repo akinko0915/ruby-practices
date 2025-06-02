@@ -14,9 +14,8 @@ def format_columns(contents, column_number)
 
   # 縦(列)で分割
   columns = sorted_contents.each_slice(row_count).to_a;
-  # 横 (行)で分割
-  rows = columns.transpose
-
+  # 横 (行)で分割 (指定した配列の長さまでなかったら最後尾に空白の要素を入れる)
+  rows = columns.each{ |col| col[row_count - 1] = " " if col.length < row_count }.transpose
   rows.each do |row|
     puts row.map{|r| r.ljust(10)}.join(" ")
   end
