@@ -18,7 +18,7 @@ def format_columns(contents, column_number)
   rows = columns.transpose
 
   rows.each do |row|
-    puts row.join(" ")
+    puts row.map{|r| r.ljust(10)}.join(" ")
   end
 end
 
