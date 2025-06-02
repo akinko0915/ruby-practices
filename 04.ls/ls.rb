@@ -18,7 +18,7 @@ end
 
 def display_directory_listing(col_count = 3)
   current_directory = Dir.pwd
-  contents = Dir.children(current_directory)
+  contents = Dir.children(current_directory).reject { |name| name.start_with?('.') }
   rows, widths = format_table(contents, col_count)
   display_table(rows, widths)
 end
