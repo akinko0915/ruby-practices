@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-def display_table(rows, column_width)
+def display_filenames_table(rows, col_widths)
   rows.each do |row|
-    print row.each_with_index.map { |item, col_index| item.ljust(column_width[col_index] + 2) }.join
+    print row.each_with_index.map { |item, col_index| item.ljust(col_widths[col_index] + 2) }.join
     puts
   end
 end
 
-def format_table(contents, col_count)
+def format_as_table(contents, col_count)
   row_count = (contents.size.to_f / col_count).ceil
   columns = contents.sort.each_slice(row_count).map { |col| col.fill('', col.size...row_count) }
   rows = columns.transpose
@@ -16,11 +16,11 @@ def format_table(contents, col_count)
   [rows, col_widths]
 end
 
-def display_directory_listing(col_count = 3)
+def display_filenames(col_count = 3)
   current_directory = Dir.pwd
   contents = Dir.children(current_directory).reject { |name| name.start_with?('.') }
-  rows, widths = format_table(contents, col_count)
-  display_table(rows, widths)
+  rows, col_widths = format_as_table(contents, col_count)
+  display_filenames_table(rows, col_widths)
 end
 
-display_directory_listing
+display_filenames
