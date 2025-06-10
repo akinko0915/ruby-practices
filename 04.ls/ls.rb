@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+require 'optparse'
 DEFAULT_COLUMN_COUNT = 3
 
 def display_filenames_table(rows, col_widths)
@@ -18,10 +19,23 @@ def format_as_table(contents, col_count)
   [rows, col_widths]
 end
 
-def display_filenames(col_count)
+def display_filenames(col_count, options)
+  puts "option a" if options[:a]
+
   current_directory = Dir.pwd
   contents = Dir.children(current_directory).reject { |name| name.start_with?('.') }.sort
   rows, col_widths = format_as_table(contents, col_count)
   display_filenames_table(rows, col_widths)
 end
-display_filenames(DEFAULT_COLUMN_COUNT)
+
+options = {
+  a: false
+}
+opts = OptionParser.new do |opt|
+  opt.on('-a', '--all', "Show all files") do
+    options[:a] = true
+  end
+end
+opts.parse!
+
+display_filenames(DEFAULT_COLUMN_COUNT, options)
