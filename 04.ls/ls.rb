@@ -27,14 +27,18 @@ def display_filenames(col_count, options)
   display_filenames_table(rows, col_widths)
 end
 
-options = {
-  a: false
-}
-opts = OptionParser.new do |opt|
-  opt.on('-a', '--all', "Show all files") do
-    options[:a] = true
+def extract_options
+  options = {
+    a: false
+  }
+  opts = OptionParser.new do |opt|
+    opt.on('-a', '--all', "Show all files") do
+      options[:a] = true
+    end
   end
+  opts.parse!
+  options
 end
-opts.parse!
 
+options = extract_options
 display_filenames(DEFAULT_COLUMN_COUNT, options)
