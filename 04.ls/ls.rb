@@ -20,10 +20,9 @@ def format_as_table(contents, col_count)
 end
 
 def display_filenames(col_count, options)
-  puts "option a" if options[:a]
-
   current_directory = Dir.pwd
-  contents = Dir.children(current_directory).reject { |name| name.start_with?('.') }.sort
+  contents = Dir.children(current_directory).sort
+  contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
   rows, col_widths = format_as_table(contents, col_count)
   display_filenames_table(rows, col_widths)
 end
