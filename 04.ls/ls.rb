@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 require 'optparse'
 DEFAULT_COLUMN_COUNT = 3
 
@@ -12,6 +13,7 @@ end
 
 def format_as_table(contents, col_count)
   return [[], []] if contents.empty?
+
   row_count = (contents.size.to_f / col_count).ceil
   columns = contents.each_slice(row_count).map { |col| col.fill('', col.size...row_count) }
   rows = columns.transpose
@@ -32,7 +34,7 @@ def extract_options
     a: false
   }
   opts = OptionParser.new do |opt|
-    opt.on('-a', '--all', "Show all files") do
+    opt.on('-a', 'Show all files') do
       options[:a] = true
     end
   end
