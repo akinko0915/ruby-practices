@@ -23,10 +23,12 @@ class Frame
       if frame1.strike? && frame2
         score = 10 + frame2.shots[0]
       else
-        score = frame1.shots.sum
+        score = frame1.shots[0..1].sum
       end
     elsif spare?
       score = frame1.shots[0]
+    else
+      0
     end
     score
   end
