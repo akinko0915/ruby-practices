@@ -7,15 +7,14 @@ class Game
   end
 
   def total_score
-    total = 0
-    @frames.each_with_index do |frame, i|
-      total += frame.sum
+    @frames.each_with_index.sum do |frame, i|
+      total = frame.sum
       next_frame = @frames[i + 1]
       next_next_frame = @frames[i + 2]
       if (i < 9) && (frame.strike? || frame.spare?)
         total += frame.bonus_score(next_frame, next_next_frame)
       end
+      total
     end
-    total
   end
 end
