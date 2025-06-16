@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Frame
   attr_reader :shots
 
@@ -20,11 +22,11 @@ class Frame
   def bonus_score(frame1, frame2)
     score = 0
     if strike?
-      if frame1.strike? && frame2
-        score = 10 + frame2.shots[0]
-      else
-        score = frame1.shots[0..1].sum
-      end
+      score = if frame1.strike? && frame2
+                10 + frame2.shots[0]
+              else
+                frame1.shots[0..1].sum
+              end
     elsif spare?
       score = frame1.shots[0]
     else
