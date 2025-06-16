@@ -12,4 +12,8 @@ class Frame
   def strike?
     @shots[0] == 10
   end
+
+  def spare?
+    @shots.sum == 10
+  end
 end
