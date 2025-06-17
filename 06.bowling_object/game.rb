@@ -29,9 +29,7 @@ class Game
     @frames.each_with_index.sum do |frame, i|
       total = frame.base_score
       if i < FRAME_COUNT - 1
-        next_frame = @frames[i + 1]
-        next_next_frame = @frames[i + 2]
-        total += frame.bonus_score(next_frame, next_next_frame)
+        total += frame.bonus_score(*@frames[(i + 1)..(i + 2)])
       end
       total
     end

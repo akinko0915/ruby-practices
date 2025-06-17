@@ -23,7 +23,7 @@ class Frame
     end
   end
 
-  def bonus_score(next_frame, next_next_frame)
+  def bonus_score(next_frame, next_next_frame = nil)
     return 0 unless strike? || spare?
 
     score = next_frame.shots[0]
