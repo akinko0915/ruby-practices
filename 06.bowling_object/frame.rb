@@ -7,7 +7,7 @@ class Frame
     @shots = shots
   end
 
-  def sum
+  def base_score
     @shots.sum
   end
 

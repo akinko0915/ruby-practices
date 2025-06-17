@@ -27,7 +27,7 @@ class Game
 
   def total_score
     @frames.each_with_index.sum do |frame, i|
-      total = frame.sum
+      total = frame.base_score
       if i < FRAME_COUNT - 1
         next_frame = @frames[i + 1]
         next_next_frame = @frames[i + 2]
