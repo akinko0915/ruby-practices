@@ -23,19 +23,19 @@ class Frame
     end
   end
 
-  def bonus_score(frame1, frame2)
-    score = 0
+  def bonus_score(next_frame, next_next_frame)
+    return 0 unless strike? || spare?
+
+    score = next_frame.shots[0]
+
     if strike?
-      score = if frame1.strike? && frame2
-                10 + frame2.shots[0]
-              else
-                frame1.shots[0..1].sum
-              end
-    elsif spare?
-      score = frame1.shots[0]
-    else
-      0
+      score += if next_frame.strike? && next_next_frame
+                 next_next_frame.shots[0]
+               else
+                 next_frame.shots[1]
+               end
     end
+
     score
   end
 end
