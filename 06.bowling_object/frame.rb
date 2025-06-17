@@ -16,7 +16,11 @@ class Frame
   end
 
   def spare?
-    @shots.sum == 10
+    if strike?
+      false
+    else
+      @shots.sum == 10
+    end
   end
 
   def bonus_score(frame1, frame2)
