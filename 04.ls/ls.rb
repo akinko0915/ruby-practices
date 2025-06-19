@@ -30,8 +30,8 @@ def display_filenames(col_count, options)
     # contentsの中身を一つずつ見ていく
     # mode, nlink, uid, gid, size, mtimeを文字列で結合させたものに変換する
     #　変換したものを配列にする
-    contents.map do |content|
-      content_info = File::Stat.new(content)
+    contents.map do |path|
+      content_info = File::Stat.new(path)
       mode = content_info.mode.to_s(8).rjust(6, '0')
       puts mode_to_symbolic(mode)
     end
@@ -50,15 +50,6 @@ def mode_to_symbolic(mode)
     '12' => 'l',
     '14' => 's'
   }
-  # そのほかのユーザーの実行権限を持つ時 t 持たない時 T
-  # SGIDが設定されており、且つグループの実行権限を持つ場合 s 持たない時 S
-  # SUIDが設定されており、且つ所有者の実行権限を持つ場合 s, 持たない場合 S
-  convert_special_privilege = {
-    '0' => '',
-    '1' => 't',
-    '2' => 's',
-    '4' => 'a'
-  }
 
   convert_file_mode = {
     '0' => '---',
@@ -72,10 +63,41 @@ def mode_to_symbolic(mode)
   }
 
   file_type = convert_file_type[mode[0...2]]
-  special_privilege = convert_special_privilege[mode[2]]
-  file_mode = mode[3..5].chars.map { |m| convert_file_mode[m] }.join
+  special_privilege = mode[2].to_i
 
-  file_type + special_privilege + file_mode
+  user_perm = convert_file_mode[mode[3]]
+  group_perm = convert_file_mode[mode[4]]
+  other_perm = convert_file_mode[mode[5]]
+
+  suid   = (special_privilege & 0b100) != 0
+  sgid   = (special_privilege & 0b010) != 0
+  sticky = (special_privilege & 0b001) != 0
+
+  if suid
+    if user_perm[-1] == "x"
+       user_perm[-1] = "s"
+    else
+       user_perm[-1] = "S"
+    end
+  end
+
+  if sgid
+    if group_perm[-1] == "x"
+       group_perm[-1] = "s"
+    else
+       group_perm[-1] = "S"
+    end
+  end
+
+  if sticky
+    if other_perm[-1] == "x"
+       other_perm[-1] = "t"
+    else
+       other_perm[-1] = "T"
+    end
+  end
+
+  file_type + user_perm + group_perm + other_perm
 end
 
 def extract_options
