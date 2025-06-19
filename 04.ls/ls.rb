@@ -71,29 +71,24 @@ def mode_to_symbolic(mode)
 end
 
 def format_file_data(file_data)
-  max_width = {
-    nlink: file_data.map { |d| d[:nlink].to_s.size }.max,
-    owner_name: file_data.map { |d| d[:owner_name].to_s.size }.max,
-    group_name: file_data.map { |d| d[:group_name].to_s.size }.max,
-    size: file_data.map { |d| d[:size].to_s.size }.max,
-    month: file_data.map { |d| d[:month].to_s.size }.max,
-    day: file_data.map { |d| d[:day].to_s.size }.max,
-    time: file_data.map { |d| d[:time].size }.max,
-    file: file_data.map { |d| d[:file].to_s.size }.max
-  }
+  keys = file_data.first.keys
+  max_width = keys.each_with_object({}) do |key, hash|
+    hash[key] = file_data.map { |d| d[key].to_s.size }.max
+  end
 
+  ## 明日ここのリファクタリングから
   outputs = []
   file_data.each do |f|
     outputs << [
       f[:mode],
       f[:nlink].to_s.rjust(max_width[:nlink]),
-      f[:owner_name].rjust(max_width[:owner_name]),
-      f[:group_name].rjust(max_width[:group_name]),
+      f[:owner_name].ljust(max_width[:owner_name]),
+      f[:group_name].ljust(max_width[:group_name]),
       f[:size].to_s.rjust(max_width[:size]),
       f[:month].to_s.rjust(max_width[:month]),
       f[:day].to_s.rjust(max_width[:day]),
       f[:time].rjust(max_width[:time]),
-      f[:file].rjust(max_width[:file])
+      f[:file].ljust(max_width[:file])
     ].join(' ')
   end
   outputs
