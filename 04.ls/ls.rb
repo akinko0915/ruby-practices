@@ -32,8 +32,8 @@ def display_filenames(col_count, options)
     #　変換したものを配列にする
     contents.map do |path|
       content_info = File::Stat.new(path)
-      mode = content_info.mode.to_s(8).rjust(6, '0')
-      puts mode_to_symbolic(mode)
+      mode = mode_to_symbolic(content_info.mode.to_s(8).rjust(6, '0'))
+      puts mode
     end
   end
   rows, col_widths = format_as_table(contents, col_count)
@@ -74,27 +74,15 @@ def mode_to_symbolic(mode)
   sticky = (special_privilege & 0b001) != 0
 
   if suid
-    if user_perm[-1] == "x"
-       user_perm[-1] = "s"
-    else
-       user_perm[-1] = "S"
-    end
+    user_perm[-1] == "x" ? user_perm[-1] = "s" : user_perm[-1] = "S"
   end
 
   if sgid
-    if group_perm[-1] == "x"
-       group_perm[-1] = "s"
-    else
-       group_perm[-1] = "S"
-    end
+    group_perm[-1] == "x" ? group_perm[-1] = "s" : group_perm[-1] = "S"
   end
 
   if sticky
-    if other_perm[-1] == "x"
-       other_perm[-1] = "t"
-    else
-       other_perm[-1] = "T"
-    end
+    other_perm[-1] == "x" ? other_perm[-1] = "t" : other_perm[-1] = "T"
   end
 
   file_type + user_perm + group_perm + other_perm
