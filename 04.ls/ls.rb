@@ -32,14 +32,18 @@ def display_filenames(col_count, options)
     # contentsの中身を一つずつ見ていく
     # mode, nlink, uid, gid, size, mtimeを文字列で結合させたものに変換する
     #　変換したものを配列にする
-    contents.map do |path|
-      content_info = File::Stat.new(path)
+    contents.map do |file|
+      content_info = File::Stat.new(file)
       mode = mode_to_symbolic(content_info.mode.to_s(8).rjust(6, '0'))
       nlink = content_info.nlink
       owner_name = Etc.getpwuid(content_info.uid).name
       group_name = Etc.getgrgid(content_info.gid).name
       size = content_info.size
-      output = [mode, nlink, owner_name, group_name, size].join(" ")
+      mtime = content_info.mtime
+      month = mtime.month
+      day = mtime.day
+      time = "#{mtime.hour}:#{mtime.min}"
+      output = [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
       puts output
     end
   end
