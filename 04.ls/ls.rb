@@ -43,22 +43,6 @@ def format_as_table(contents, col_count)
   [rows, col_widths]
 end
 
-def display_filenames(col_count, options)
-  current_directory = Dir.pwd
-  contents = Dir.entries(current_directory).sort
-  contents = contents.reverse if options[:r]
-  contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
-  if options[:l]
-    file_data = extract_file_data(contents)
-    puts file_data[:total_blocks]
-    puts file_data[:file_info]
-    return
-  end
-
-  rows, col_widths = format_as_table(contents, col_count)
-  display_filenames_table(rows, col_widths)
-end
-
 def mode_to_symbolic(mode)
   file_type = CONVERT_FILE_TYPE[mode[0...2]]
   special_privilege = mode[2].to_i
@@ -134,7 +118,23 @@ def extract_file_data(contents)
   end
 
   total_blocks = "total #{total_blocks}"
-  file_data = { total_blocks: total_blocks, file_info: format_file_data(file_data)}
+  file_data = { total_blocks:, file_info: format_file_data(file_data) }
+end
+
+def display_filenames(col_count, options)
+  current_directory = Dir.pwd
+  contents = Dir.entries(current_directory).sort
+  contents = contents.reverse if options[:r]
+  contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
+  if options[:l]
+    file_data = extract_file_data(contents)
+    puts file_data[:total_blocks]
+    puts file_data[:file_info]
+    return
+  end
+
+  rows, col_widths = format_as_table(contents, col_count)
+  display_filenames_table(rows, col_widths)
 end
 
 def extract_options
