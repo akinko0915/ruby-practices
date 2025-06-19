@@ -5,6 +5,26 @@ require 'optparse'
 require 'etc'
 
 DEFAULT_COLUMN_COUNT = 3
+CONVERT_FILE_TYPE = {
+  '01' => 'p',
+  '02' => 'c',
+  '04' => 'd',
+  '06' => 'b',
+  '10' => '-',
+  '12' => 'l',
+  '14' => 's'
+}.freeze
+
+CONVERT_FILE_MODE = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => 'rw-',
+  '7' => 'rwx'
+}.freeze
 
 def display_filenames_table(rows, col_widths)
   rows.each do |row|
@@ -35,33 +55,12 @@ def display_filenames(col_count, options)
 end
 
 def mode_to_symbolic(mode)
-  convert_file_type = {
-    '01' => 'p',
-    '02' => 'c',
-    '04' => 'd',
-    '06' => 'b',
-    '10' => '-',
-    '12' => 'l',
-    '14' => 's'
-  }
-
-  convert_file_mode = {
-    '0' => '---',
-    '1' => '--x',
-    '2' => '-w-',
-    '3' => '-wx',
-    '4' => 'r--',
-    '5' => 'r-x',
-    '6' => 'rw-',
-    '7' => 'rwx'
-  }
-
-  file_type = convert_file_type[mode[0...2]]
+  file_type = CONVERT_FILE_TYPE[mode[0...2]]
   special_privilege = mode[2].to_i
 
-  user_perm = convert_file_mode[mode[3]]
-  group_perm = convert_file_mode[mode[4]]
-  other_perm = convert_file_mode[mode[5]]
+  user_perm = CONVERT_FILE_MODE[mode[3]]
+  group_perm = CONVERT_FILE_MODE[mode[4]]
+  other_perm = CONVERT_FILE_MODE[mode[5]]
 
   suid   = (special_privilege & 0b100) != 0
   sgid   = (special_privilege & 0b010) != 0
