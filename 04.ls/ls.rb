@@ -28,54 +28,8 @@ def display_filenames(col_count, options)
   contents = Dir.entries(current_directory).sort
   contents = contents.reverse if options[:r]
   contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
-  if options[:l]
-    total_blocks = 0
-    file_data = []
-    contents.map do |file|
-      file_info = File::Stat.new(file)
-      mode = mode_to_symbolic(file_info.mode.to_s(8).rjust(6, '0'))
-      nlink = file_info.nlink
-      owner_name = Etc.getpwuid(file_info.uid).name
-      group_name = Etc.getgrgid(file_info.gid).name
-      size = file_info.size.to_i
-      total_blocks += file_info.blocks
-      mtime = file_info.mtime
-      month = mtime.month
-      day = mtime.day
-      time = "#{mtime.hour}:#{mtime.min}"
-      file_data << {mode:, nlink:, owner_name:, group_name:, size:, month:, day:, time:, file:}
-    end
+  return show_file_data(contents) if options[:l]
 
-    max_width = {
-      nlink: file_data.map{|d| d[:nlink].to_s.size }.max,
-      owner_name: file_data.map{|d| d[:owner_name].to_s.size }.max,
-      group_name: file_data.map{|d| d[:group_name].to_s.size }.max,
-      size: file_data.map{|d| d[:size].to_s.size }.max,
-      month: file_data.map{|d| d[:month].to_s.size }.max,
-      day: file_data.map{|d| d[:day].to_s.size }.max,
-      time: file_data.map{|d| d[:time].to_s.size }.max,
-      file: file_data.map{|d| d[:file].to_s.size }.max,
-    }
-
-    puts max_width
-    puts "total #{total_blocks}"
-
-    file_data.each do |f|
-      puts [
-        f[:mode],
-        f[:nlink].to_s.rjust(max_width[:nlink]),
-        f[:owner_name].rjust(max_width[:owner_name]),
-        f[:group_name].rjust(max_width[:group_name]),
-        f[:size].to_s.rjust(max_width[:size]),
-        f[:month].to_s.rjust(max_width[:month]),
-        f[:day].to_s.rjust(max_width[:day]),
-        f[:time].rjust(max_width[:time]),
-        f[:file].rjust(max_width[:file])
-    ].join(' ')
-    end
-
-    return
-  end
   rows, col_widths = format_as_table(contents, col_count)
   display_filenames_table(rows, col_widths)
 end
@@ -114,25 +68,71 @@ def mode_to_symbolic(mode)
   sticky = (special_privilege & 0b001) != 0
 
   if suid
-    user_perm[-1] == "x" ? user_perm[-1] = "s" : user_perm[-1] = "S"
+    user_perm[-1] = user_perm[-1] == 'x' ? 's' : 'S'
   end
 
   if sgid
-    group_perm[-1] == "x" ? group_perm[-1] = "s" : group_perm[-1] = "S"
+    group_perm[-1] = group_perm[-1] == 'x' ? 's' : 'S'
   end
 
   if sticky
-    other_perm[-1] == "x" ? other_perm[-1] = "t" : other_perm[-1] = "T"
+    other_perm[-1] = other_perm[-1] == 'x' ? 't' : 'T'
   end
 
   file_type + user_perm + group_perm + other_perm
+end
+
+def show_file_data(contents)
+  total_blocks = 0
+  file_data = []
+  contents.map do |file|
+    file_info = File::Stat.new(file)
+    mode = mode_to_symbolic(file_info.mode.to_s(8).rjust(6, '0'))
+    nlink = file_info.nlink
+    owner_name = Etc.getpwuid(file_info.uid).name
+    group_name = Etc.getgrgid(file_info.gid).name
+    size = file_info.size.to_i
+    total_blocks += file_info.blocks
+    mtime = file_info.mtime
+    month = mtime.month
+    day = mtime.day
+    time = "#{mtime.hour.to_s.rjust(2, "0")}:#{mtime.min.to_s.rjust(2, "0")}"
+    file_data << { mode:, nlink:, owner_name:, group_name:, size:, month:, day:, time:, file: }
+  end
+
+  max_width = {
+    nlink: file_data.map { |d| d[:nlink].to_s.size }.max,
+    owner_name: file_data.map { |d| d[:owner_name].to_s.size }.max,
+    group_name: file_data.map { |d| d[:group_name].to_s.size }.max,
+    size: file_data.map { |d| d[:size].to_s.size }.max,
+    month: file_data.map { |d| d[:month].to_s.size }.max,
+    day: file_data.map { |d| d[:day].to_s.size }.max,
+    time: file_data.map { |d| d[:time].size }.max,
+    file: file_data.map { |d| d[:file].to_s.size }.max
+  }
+
+  puts "total #{total_blocks}"
+
+  file_data.each do |f|
+    puts [
+      f[:mode],
+      f[:nlink].to_s.rjust(max_width[:nlink]),
+      f[:owner_name].rjust(max_width[:owner_name]),
+      f[:group_name].rjust(max_width[:group_name]),
+      f[:size].to_s.rjust(max_width[:size]),
+      f[:month].to_s.rjust(max_width[:month]),
+      f[:day].to_s.rjust(max_width[:day]),
+      f[:time].rjust(max_width[:time]),
+      f[:file].rjust(max_width[:file])
+    ].join(' ')
+  end
 end
 
 def extract_options
   options = {
     a: false,
     r: false,
-    l: false,
+    l: false
   }
   opts = OptionParser.new do |opt|
     opt.on('-a', 'Show all files') { options[:a] = true }
