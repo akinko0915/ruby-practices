@@ -32,18 +32,19 @@ def display_filenames(col_count, options)
     block_total = 0
     outputs = []
     contents.map do |file|
-      content_info = File::Stat.new(file)
-      mode = mode_to_symbolic(content_info.mode.to_s(8).rjust(6, '0'))
-      nlink = content_info.nlink
-      owner_name = Etc.getpwuid(content_info.uid).name
-      group_name = Etc.getgrgid(content_info.gid).name
-      size = content_info.size.to_i
+      file_info = File::Stat.new(file)
+      mode = mode_to_symbolic(file_info.mode.to_s(8).rjust(6, '0'))
+      nlink = file_info.nlink
+      owner_name = Etc.getpwuid(file_info.uid).name
+      group_name = Etc.getgrgid(file_info.gid).name
+      size = file_info.size.to_i
       block_total += size
-      mtime = content_info.mtime
+      mtime = file_info.mtime
       month = mtime.month
       day = mtime.day
       time = "#{mtime.hour}:#{mtime.min}"
-      outputs << [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
+      all_info = [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
+      outputs << all_info
     end
     puts "total #{block_total / 1024}"
     puts outputs
