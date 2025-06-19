@@ -29,23 +29,24 @@ def display_filenames(col_count, options)
   contents = contents.reverse if options[:r]
   contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
   if options[:l]
-    # contentsの中身を一つずつ見ていく
-    # mode, nlink, uid, gid, size, mtimeを文字列で結合させたものに変換する
-    #　変換したものを配列にする
+    block_total = 0
+    outputs = []
     contents.map do |file|
       content_info = File::Stat.new(file)
       mode = mode_to_symbolic(content_info.mode.to_s(8).rjust(6, '0'))
       nlink = content_info.nlink
       owner_name = Etc.getpwuid(content_info.uid).name
       group_name = Etc.getgrgid(content_info.gid).name
-      size = content_info.size
+      size = content_info.size.to_i
+      block_total += size
       mtime = content_info.mtime
       month = mtime.month
       day = mtime.day
       time = "#{mtime.hour}:#{mtime.min}"
-      output = [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
-      puts output
+      outputs << [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
     end
+    puts "total #{block_total / 1024}"
+    puts outputs
   end
   rows, col_widths = format_as_table(contents, col_count)
   display_filenames_table(rows, col_widths)
