@@ -33,11 +33,13 @@ end
 def extract_options
   options = {
     a: false,
-    r: false
+    r: false,
+    l: false,
   }
   opts = OptionParser.new do |opt|
     opt.on('-a', 'Show all files') { options[:a] = true }
     opt.on('-r', 'Reverse file order') { options[:r] = true }
+    opt.on('-l', 'Long listing format') { options[:l] = true }
   end
   opts.parse!
   options
