@@ -48,7 +48,12 @@ def display_filenames(col_count, options)
   contents = Dir.entries(current_directory).sort
   contents = contents.reverse if options[:r]
   contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
-  return show_file_data(contents) if options[:l]
+  if options[:l]
+    file_data = extract_file_data(contents)
+    puts file_data[:total_blocks]
+    puts file_data[:file_info]
+    return
+  end
 
   rows, col_widths = format_as_table(contents, col_count)
   display_filenames_table(rows, col_widths)
@@ -110,7 +115,7 @@ def format_file_data(file_data)
   outputs
 end
 
-def show_file_data(contents)
+def extract_file_data(contents)
   total_blocks = 0
   file_data = []
   contents.map do |file|
@@ -128,8 +133,8 @@ def show_file_data(contents)
     file_data << { mode:, nlink:, owner_name:, group_name:, size:, month:, day:, time:, file: }
   end
 
-  puts "total #{total_blocks}"
-  puts format_file_data(file_data)
+  total_blocks = "total #{total_blocks}"
+  file_data = { total_blocks: total_blocks, file_info: format_file_data(file_data)}
 end
 
 def extract_options
