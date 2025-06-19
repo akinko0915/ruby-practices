@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
+
 DEFAULT_COLUMN_COUNT = 3
 
 def display_filenames_table(rows, col_widths)
@@ -33,7 +35,12 @@ def display_filenames(col_count, options)
     contents.map do |path|
       content_info = File::Stat.new(path)
       mode = mode_to_symbolic(content_info.mode.to_s(8).rjust(6, '0'))
-      puts mode
+      nlink = content_info.nlink
+      owner_name = Etc.getpwuid(content_info.uid).name
+      group_name = Etc.getgrgid(content_info.gid).name
+      size = content_info.size
+      output = [mode, nlink, owner_name, group_name, size].join(" ")
+      puts output
     end
   end
   rows, col_widths = format_as_table(contents, col_count)
