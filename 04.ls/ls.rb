@@ -29,7 +29,7 @@ def display_filenames(col_count, options)
   contents = contents.reverse if options[:r]
   contents = contents.reject { |name| name.start_with?('.') } unless options[:a]
   if options[:l]
-    block_total = 0
+    total_blocks = 0
     outputs = []
     contents.map do |file|
       file_info = File::Stat.new(file)
@@ -38,7 +38,7 @@ def display_filenames(col_count, options)
       owner_name = Etc.getpwuid(file_info.uid).name
       group_name = Etc.getgrgid(file_info.gid).name
       size = file_info.size.to_i
-      block_total += size
+      total_blocks += file_info.blocks
       mtime = file_info.mtime
       month = mtime.month
       day = mtime.day
@@ -46,7 +46,7 @@ def display_filenames(col_count, options)
       all_info = [mode, nlink, owner_name, group_name, size, month, day, time, file].join(" ")
       outputs << all_info
     end
-    puts "total #{block_total / 1024}"
+    puts "total #{total_blocks}"
     puts outputs
   end
   rows, col_widths = format_as_table(contents, col_count)
