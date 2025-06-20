@@ -26,6 +26,8 @@ CONVERT_FILE_MODE = {
   '7' => 'rwx'
 }.freeze
 
+RIGHT_ALIGN_KEYS = %i[nlink size month day time].freeze
+
 def display_filenames_table(rows, col_widths)
   rows.each do |row|
     print row.each_with_index.map { |item, col_index| item.ljust(col_widths[col_index] + 2) }.join
@@ -76,22 +78,12 @@ def format_file_data(file_data)
     hash[key] = file_data.map { |d| d[key].to_s.size }.max
   end
 
-  ## 明日ここのリファクタリングから
-  outputs = []
-  file_data.each do |f|
-    outputs << [
-      f[:mode],
-      f[:nlink].to_s.rjust(max_width[:nlink]),
-      f[:owner_name].ljust(max_width[:owner_name]),
-      f[:group_name].ljust(max_width[:group_name]),
-      f[:size].to_s.rjust(max_width[:size]),
-      f[:month].to_s.rjust(max_width[:month]),
-      f[:day].to_s.rjust(max_width[:day]),
-      f[:time].rjust(max_width[:time]),
-      f[:file].ljust(max_width[:file])
-    ].join(' ')
+  file_data.map do |f|
+    keys.map do |key|
+      data = f[key].to_s
+      RIGHT_ALIGN_KEYS.include?(key) ? data.rjust(max_width[key]) : data.ljust(max_width[key])
+    end.join(' ')
   end
-  outputs
 end
 
 def extract_file_data(contents)
