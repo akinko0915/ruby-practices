@@ -26,7 +26,7 @@ CONVERT_FILE_MODE = {
   '7' => 'rwx'
 }.freeze
 
-RIGHT_ALIGN_KEYS = %i[nlink size month day time].freeze
+RIGHT_ALIGN_KEYS = %i[nlink group_name size month day time].freeze
 
 def display_filenames_table(rows, col_widths)
   rows.each do |row|
@@ -93,12 +93,12 @@ def extract_file_data(contents)
     file_info = File::Stat.new(file)
     mode = mode_to_symbolic(file_info.mode.to_s(8).rjust(6, '0'))
     nlink = file_info.nlink
-    owner_name = Etc.getpwuid(file_info.uid).name
-    group_name = Etc.getgrgid(file_info.gid).name
+    owner_name = Etc.getpwuid(file_info.uid).name + ' '
+    group_name = Etc.getgrgid(file_info.gid).name + ' '
     size = file_info.size.to_i
     total_blocks += file_info.blocks
     mtime = file_info.mtime
-    month = mtime.month
+    month = mtime.month.to_s.rjust(2, ' ')
     day = mtime.day
     time = "#{mtime.hour.to_s.rjust(2, '0')}:#{mtime.min.to_s.rjust(2, '0')}"
     file_data << { mode:, nlink:, owner_name:, group_name:, size:, month:, day:, time:, file: }
