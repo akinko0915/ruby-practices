@@ -49,9 +49,9 @@ def mode_to_symbolic(mode)
   file_type = CONVERT_FILE_TYPE[mode[0...2]]
   special_privilege = mode[2].to_i
 
-  user_perm = CONVERT_FILE_MODE[mode[3]]
-  group_perm = CONVERT_FILE_MODE[mode[4]]
-  other_perm = CONVERT_FILE_MODE[mode[5]]
+  user_perm = CONVERT_FILE_MODE[mode[3]].dup
+  group_perm = CONVERT_FILE_MODE[mode[4]].dup
+  other_perm = CONVERT_FILE_MODE[mode[5]].dup
 
   suid   = (special_privilege & 0b100) != 0
   sgid   = (special_privilege & 0b010) != 0
