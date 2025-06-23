@@ -26,7 +26,7 @@ CONVERT_FILE_MODE = {
   '7' => 'rwx'
 }.freeze
 
-RIGHT_ALIGN_KEYS = %i[nlink group_name size month day time].freeze
+RIGHT_ALIGN_KEYS = %i[nlink size month day time].freeze
 
 def display_filenames_table(rows, col_widths)
   rows.each do |row|
