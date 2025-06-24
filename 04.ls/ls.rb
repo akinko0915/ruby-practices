@@ -90,7 +90,7 @@ def extract_file_data(contents)
   total_blocks = 0
   file_data = []
   contents.map do |file|
-    file_info = File::Stat.new(file)
+    file_info = File.lstat(file)
     mode = mode_to_symbolic(file_info.mode.to_s(8).rjust(6, '0'))
     nlink = file_info.nlink
     owner_name = Etc.getpwuid(file_info.uid).name + ' '
