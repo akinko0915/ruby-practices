@@ -9,9 +9,7 @@ def display_calendar(month, year)
     puts "      #{month}月 #{year}      "
     puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
 
-    start_date.wday.times do
-        print "   "
-    end
+    print "   " * start_date.wday
 
     (start_date..end_date).each do |date|
         print date.day.to_s.rjust(2) + " "
